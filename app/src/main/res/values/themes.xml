@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.BabelLibrary" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.BabelLibrary" parent="android:Theme.Material.NoActionBar">
         <item name="android:statusBarColor">#0B0E14</item>
         <item name="android:navigationBarColor">#0B0E14</item>
         <item name="android:windowBackground">#0B0E14</item>
