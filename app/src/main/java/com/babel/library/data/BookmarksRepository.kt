@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.babel.library.core.Address
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 private val Context.dataStore by preferencesDataStore(name = "babel_library_prefs")
@@ -38,16 +39,8 @@ class BookmarksRepository(private val context: Context) {
     }
 
     suspend fun isBookmarked(address: Address): Boolean {
-        var result = false
-        context.dataStore.data.map { prefs ->
-            (prefs[BOOKMARKS_KEY] ?: emptySet()).contains(address.toDisplayString())
-        }.collectFirstInto { result = it }
-        return result
-    }
-
-    // Небольшой хелпер, чтобы не тащить весь Flow.first() импорт отдельно
-    private suspend fun Flow<Boolean>.collectFirstInto(setter: (Boolean) -> Unit) {
-        kotlinx.coroutines.flow.firstOrNull(this)?.let(setter)
+        val prefs = context.dataStore.data.first()
+        return (prefs[BOOKMARKS_KEY] ?: emptySet()).contains(address.toDisplayString())
     }
 }
 
