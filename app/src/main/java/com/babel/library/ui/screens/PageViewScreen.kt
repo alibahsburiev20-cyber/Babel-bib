@@ -2,7 +2,9 @@ package com.babel.library.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -15,7 +17,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.babel.library.core.Address
@@ -93,9 +94,18 @@ fun PageViewScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            HighlightedPageText(text = pageText, highlightRange = highlightRange)
+            // Текст страницы прокручивается отдельно от заголовка,
+            // чтобы все 3200 символов были доступны, а шапка книги оставалась на месте.
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                HighlightedPageText(text = pageText, highlightRange = highlightRange)
+            }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 address.toDisplayString(),
@@ -129,7 +139,7 @@ fun PageViewScreen(
 @Composable
 private fun HighlightedPageText(text: String, highlightRange: IntRange?) {
     if (highlightRange == null) {
-        Text(text, style = PageTextStyle, color = BabelPaperText, maxLines = 14, overflow = TextOverflow.Ellipsis)
+        Text(text, style = PageTextStyle, color = BabelPaperText)
         return
     }
     val safeEnd = highlightRange.last.coerceAtMost(text.length)
@@ -141,5 +151,5 @@ private fun HighlightedPageText(text: String, highlightRange: IntRange?) {
         }
         append(text.substring(safeEnd))
     }
-    Text(annotated, style = PageTextStyle, color = BabelPaperText, maxLines = 14, overflow = TextOverflow.Ellipsis)
+    Text(annotated, style = PageTextStyle, color = BabelPaperText)
 }
